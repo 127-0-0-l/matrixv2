@@ -105,16 +105,19 @@ class Program
 
     static void CheckResize()
     {
-        if (_consoleHeight != Console.WindowHeight
-            || _consoleWidth != Console.WindowWidth)
+        int height = Console.WindowHeight;
+        int width = Console.WindowWidth;
+
+        if (_consoleHeight != height
+            || _consoleWidth != width)
         {
             try
             {
                 Console.Clear();
-                Console.SetBufferSize(_consoleWidth, _consoleHeight);
+                Console.SetBufferSize(width, height);
 
-                _consoleHeight = Console.WindowHeight;
-                _consoleWidth = Console.WindowWidth;
+                _consoleHeight = height;
+                _consoleWidth = width;
 
                 _charMap = new char[_consoleHeight, _consoleWidth];
                 InitCharMap();
