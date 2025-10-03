@@ -8,7 +8,7 @@ class Program
     static int _consoleHeight;
     static char[,] _charMap;
     static int[,] _historyMap;
-    static int _fps = 30;
+    static int _fps = 45;
     static long _frequency = Stopwatch.Frequency;
     static long _ticksPerFrame = _frequency / _fps;
     static readonly object _locker = new object();
@@ -21,11 +21,10 @@ class Program
         handleKeys.Start();
 
         const string charSet = "1234567890-=qwertyuiop[]\\';lkjhgfdsazxcvbnm,./QAZWSXEDCRFVTGBYHNUJMIK<OL>P:?{}|";
-        const int dropSize = 13;
+        const int dropSize = 3;
 
         Random rnd = new Random();
         int[] rndColumns;
-        int _0rowColsCount = 0;
 
         Stopwatch sw = new Stopwatch();
         string realFps;
@@ -37,9 +36,7 @@ class Program
 
             rndColumns = new int[1 + (_consoleWidth / dropSize) / 10];
             for (int i = 0; i < rndColumns.Length; i++)
-            {
                 rndColumns[i] = rnd.Next(_consoleWidth);
-            }
 
             for (int i = 0; i < _consoleHeight; i++)
             {
@@ -53,7 +50,6 @@ class Program
                         if (rndColumns.Contains(j))
                         {
                             _historyMap[i, j] = 1;
-                            _0rowColsCount++;
                             _charMap[i, j] = charSet[rnd.Next(charSet.Length)];
                         }
                     }
@@ -71,12 +67,13 @@ class Program
                 }
             }
 
+            Print();
+
             while(sw.ElapsedTicks < _ticksPerFrame) { }
             realFps = (_frequency / sw.ElapsedTicks).ToString("D4");
             for (int i = 0; i < realFps.Length; i++)
                 _charMap[0, i] = realFps[i];
 
-            Print();
             sw.Reset();
         }
     }
@@ -108,8 +105,7 @@ class Program
         int height = Console.WindowHeight;
         int width = Console.WindowWidth;
 
-        if (_consoleHeight != height
-            || _consoleWidth != width)
+        if (_consoleHeight != height || _consoleWidth != width)
         {
             try
             {
@@ -131,6 +127,7 @@ class Program
     {
         ConsoleKey key;
         int ccIndex = 1;
+
         while (true)
         {
             lock (_locker)
